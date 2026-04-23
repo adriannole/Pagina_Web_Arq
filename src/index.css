@@ -1,0 +1,52 @@
+:root {
+  --bg: #ffffff;
+  --terra: #8b2942;
+  --terra-deep: #5c1a2c;
+  --purple: #6b4cff;
+  --purple-soft: #9b87ff;
+  --ink: #0f0f12;
+  --muted: rgba(15, 15, 18, 0.58);
+  --glass: rgba(255, 255, 255, 0.2);
+  --glass-deep: rgba(255, 255, 255, 0.12);
+  --glass-edge: rgba(255, 255, 255, 0.52);
+  --glass-edge-soft: rgba(255, 255, 255, 0.22);
+  --glass-shadow: rgba(15, 15, 18, 0.06);
+  --glass-rim: rgba(255, 255, 255, 0.72);
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+#inicio,
+#capacidades,
+#manifiesto,
+#contacto {
+  scroll-margin-top: 5.5rem;
+}
+
+body {
+  margin: 0;
+  min-height: 100%;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: "Syne", system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+::selection {
+  background: color-mix(in srgb, var(--purple) 28%, transparent);
+  color: var(--ink);
+}
