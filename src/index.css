@@ -1,17 +1,22 @@
 :root {
-  --bg: #ffffff;
-  --terra: #8b2942;
-  --terra-deep: #5c1a2c;
-  --purple: #6b4cff;
-  --purple-soft: #9b87ff;
-  --ink: #0f0f12;
-  --muted: rgba(15, 15, 18, 0.58);
-  --glass: rgba(255, 255, 255, 0.2);
-  --glass-deep: rgba(255, 255, 255, 0.12);
-  --glass-edge: rgba(255, 255, 255, 0.52);
-  --glass-edge-soft: rgba(255, 255, 255, 0.22);
-  --glass-shadow: rgba(15, 15, 18, 0.06);
-  --glass-rim: rgba(255, 255, 255, 0.72);
+  --bg: hsl(356 54% 20%);
+  --bg-deep: hsl(356 54% 14%);
+  --surface: hsl(356 45% 24%);
+  --surface-strong: hsl(356 48% 18%);
+  --surface-soft: hsl(356 34% 31%);
+  --terra: hsl(12 62% 66%);
+  --terra-deep: hsl(355 58% 34%);
+  --purple: hsl(21 70% 76%);
+  --purple-soft: hsl(29 88% 84%);
+  --ink: hsl(18 42% 95%);
+  --muted: rgba(247, 235, 231, 0.72);
+  --glass: rgba(255, 255, 255, 0.1);
+  --glass-deep: rgba(255, 255, 255, 0.06);
+  --glass-edge: rgba(255, 255, 255, 0.2);
+  --glass-edge-soft: rgba(255, 255, 255, 0.12);
+  --glass-shadow: rgba(0, 0, 0, 0.3);
+  --glass-rim: rgba(255, 255, 255, 0.18);
+  --font-sans: "Century Gothic", "CenturyGothic", "Apple Gothic", "Gill Sans", sans-serif;
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
@@ -37,7 +42,7 @@ body {
   min-height: 100%;
   background: var(--bg);
   color: var(--ink);
-  font-family: "Syne", system-ui, sans-serif;
+  font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }
@@ -47,6 +52,6 @@ body {
 }
 
 ::selection {
-  background: color-mix(in srgb, var(--purple) 28%, transparent);
+  background: color-mix(in srgb, var(--terra) 35%, transparent);
   color: var(--ink);
 }

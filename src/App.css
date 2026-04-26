@@ -13,7 +13,7 @@
   inset: 0;
   z-index: 0;
   overflow: hidden;
-  background: #0c0e14;
+  background: var(--bg-deep);
 }
 
 .video-backdrop::before {
@@ -27,12 +27,12 @@
   background:
     conic-gradient(
       from 88deg at 72% 24%,
-      rgba(107, 76, 255, 0.48) 0deg,
+      rgba(255, 211, 193, 0.42) 0deg,
       transparent 132deg,
-      rgba(255, 210, 178, 0.32) 232deg,
+      rgba(194, 90, 72, 0.34) 232deg,
       transparent 360deg
     ),
-    radial-gradient(95% 70% at 20% 38%, rgba(255, 255, 255, 0.42) 0%, transparent 58%);
+    radial-gradient(95% 70% at 20% 38%, rgba(255, 244, 239, 0.3) 0%, transparent 58%);
   animation: hero-ambient-drift 13s ease-in-out infinite alternate;
 }
 
@@ -44,7 +44,7 @@
   height: 110%;
   object-fit: cover;
   transform: scale(1.05);
-  filter: saturate(1.08) contrast(1.08) brightness(0.78);
+  filter: saturate(1.05) contrast(1.08) brightness(0.72);
 }
 
 .video-backdrop__video--overlay {
@@ -62,10 +62,10 @@
   mix-blend-mode: soft-light;
   opacity: 0.82;
   background:
-    linear-gradient(205deg, rgba(80, 120, 200, 0.52) 0%, transparent 45%),
-    linear-gradient(25deg, rgba(255, 190, 150, 0.36) 0%, transparent 40%),
-    radial-gradient(110% 78% at 80% 12%, rgba(107, 76, 255, 0.3) 0%, transparent 60%),
-    linear-gradient(180deg, rgba(12, 14, 20, 0.44) 0%, transparent 55%);
+    linear-gradient(205deg, rgba(255, 170, 145, 0.24) 0%, transparent 45%),
+    linear-gradient(25deg, rgba(255, 232, 221, 0.18) 0%, transparent 40%),
+    radial-gradient(110% 78% at 80% 12%, rgba(255, 209, 195, 0.24) 0%, transparent 60%),
+    linear-gradient(180deg, rgba(24, 8, 12, 0.42) 0%, transparent 55%);
   background-size: 130% 130%, 120% 120%, 125% 125%, 100% 100%;
   animation: hero-grade-pulse 11s ease-in-out infinite, hero-grade-shift 18s ease-in-out infinite alternate;
 }
@@ -99,10 +99,10 @@
   z-index: 4;
   pointer-events: none;
   background:
-    linear-gradient(195deg, rgba(12, 14, 22, 0.38) 0%, transparent 42%),
-    linear-gradient(0deg, rgba(8, 10, 16, 0.86) 0%, rgba(8, 10, 16, 0.24) 38%, transparent 62%),
-    radial-gradient(ellipse 90% 70% at 70% 35%, rgba(107, 76, 255, 0.18) 0%, transparent 55%),
-    radial-gradient(ellipse 65% 48% at 22% 26%, rgba(255, 255, 255, 0.18) 0%, transparent 60%);
+    linear-gradient(195deg, rgba(36, 8, 16, 0.36) 0%, transparent 42%),
+    linear-gradient(0deg, rgba(21, 4, 8, 0.86) 0%, rgba(21, 4, 8, 0.26) 38%, transparent 62%),
+    radial-gradient(ellipse 90% 70% at 70% 35%, rgba(255, 186, 164, 0.16) 0%, transparent 55%),
+    radial-gradient(ellipse 65% 48% at 22% 26%, rgba(255, 242, 237, 0.14) 0%, transparent 60%);
   background-size: 130% 130%, 120% 120%, 125% 125%, 115% 115%;
   animation: hero-wash-breathe 9s ease-in-out infinite, hero-wash-shift 16s ease-in-out infinite alternate;
 }
@@ -114,6 +114,7 @@
   pointer-events: none;
   background: radial-gradient(ellipse at 50% 40%, transparent 22%, rgba(4, 5, 10, 0.75) 100%);
   opacity: 0.95;
+  background: radial-gradient(ellipse at 50% 40%, transparent 22%, rgba(10, 2, 4, 0.76) 100%);
 }
 
 .video-backdrop__grain {
@@ -202,6 +203,25 @@
   }
 }
 
+.video-backdrop--lite::before,
+.video-backdrop--lite .video-backdrop__grade,
+.video-backdrop--lite .video-backdrop__wash {
+  animation: none;
+}
+
+.video-backdrop--lite .video-backdrop__beam,
+.video-backdrop--lite .video-backdrop__grain {
+  display: none;
+}
+
+.video-backdrop--lite .video-backdrop__video {
+  filter: saturate(1.02) contrast(1.04) brightness(0.74);
+}
+
+.video-backdrop--lite .video-backdrop__wash {
+  opacity: 0.82;
+}
+
 .glass-panel {
   position: relative;
   background: linear-gradient(
@@ -212,8 +232,8 @@
   border: 1px solid color-mix(in srgb, var(--glass-rim) 55%, var(--glass-edge-soft));
   box-shadow:
     0 1px 0 var(--glass-rim) inset,
-    0 -1px 0 rgba(15, 15, 18, 0.04) inset,
-    0 28px 80px rgba(15, 15, 18, 0.09),
+    0 -1px 0 rgba(255, 255, 255, 0.04) inset,
+    0 28px 80px rgba(0, 0, 0, 0.18),
     0 1px 0 rgba(255, 255, 255, 0.35) inset;
   backdrop-filter: blur(32px) saturate(185%);
   -webkit-backdrop-filter: blur(32px) saturate(185%);
@@ -230,6 +250,9 @@
 }
 
 .glass-pill {
+  color: color-mix(in srgb, var(--ink) 92%, var(--terra));
+  border: 1px solid color-mix(in srgb, var(--glass-rim) 35%, rgba(255, 210, 196, 0.18));
+  font-family: var(--font-sans);
   display: inline-flex;
   align-items: center;
   gap: 0.55rem;
@@ -240,16 +263,16 @@
   letter-spacing: 0.24em;
   text-transform: uppercase;
   font-weight: 700;
-  color: color-mix(in srgb, var(--terra) 92%, var(--ink));
+  color: color-mix(in srgb, var(--ink) 92%, var(--terra));
   background: linear-gradient(
     120deg,
-    rgba(255, 255, 255, 0.34) 0%,
-    rgba(255, 255, 255, 0.1) 100%
+    rgba(255, 247, 244, 0.28) 0%,
+    rgba(255, 255, 255, 0.08) 100%
   );
-  border: 1px solid color-mix(in srgb, var(--glass-rim) 35%, rgba(139, 41, 66, 0.2));
+  border: 1px solid color-mix(in srgb, var(--glass-rim) 35%, rgba(255, 210, 196, 0.18));
   box-shadow:
-    0 1px 0 rgba(255, 255, 255, 0.55) inset,
-    0 20px 50px rgba(15, 15, 18, 0.07);
+    0 1px 0 rgba(255, 255, 255, 0.34) inset,
+    0 20px 50px rgba(0, 0, 0, 0.16);
   backdrop-filter: blur(24px) saturate(175%);
   -webkit-backdrop-filter: blur(24px) saturate(175%);
 }
@@ -301,7 +324,7 @@
 }
 
 .topbar__wordmark {
-  font-family: "Syne", system-ui, sans-serif;
+  font-family: var(--font-sans);
   font-weight: 800;
   font-size: clamp(0.95rem, 2.2vw, 1.15rem);
   letter-spacing: 0.14em;
@@ -430,7 +453,7 @@
 
 .hero__headline-sans {
   display: block;
-  font-family: "Syne", system-ui, sans-serif;
+  font-family: var(--font-sans);
   font-weight: 700;
   font-size: clamp(2.65rem, 5.2vw, 4.25rem);
   letter-spacing: -0.03em;
@@ -441,9 +464,9 @@
 .hero__headline-serif {
   display: block;
   margin-top: 0.2rem;
-  font-family: "Instrument Serif", ui-serif, Georgia, serif;
-  font-weight: 400;
-  font-style: italic;
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-style: normal;
   font-size: clamp(3.1rem, 7vw, 5.45rem);
   letter-spacing: -0.02em;
   color: rgba(255, 255, 255, 0.94);
@@ -561,7 +584,7 @@
   position: relative;
   z-index: 1;
   margin: 0 0 0.65rem;
-  font-family: "Instrument Serif", ui-serif, Georgia, serif;
+  font-family: var(--font-sans);
   font-size: 1.24rem;
   font-weight: 400;
   font-style: normal;
@@ -795,7 +818,8 @@
   justify-content: space-between;
   gap: 1rem;
   border-top: 1px solid rgba(15, 15, 18, 0.08);
-  background: rgba(255, 255, 255, 0.92);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  background: color-mix(in srgb, var(--bg) 76%, white 6%);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
 }
@@ -815,7 +839,7 @@
 }
 
 .site-foot__link:hover {
-  color: var(--purple);
+  color: var(--purple-soft);
 }
 
 .capabilities {
@@ -825,14 +849,11 @@
   padding-top: clamp(2rem, 4.8vw, 3rem);
   padding-bottom: clamp(3rem, 6.5vw, 4.25rem);
   padding-inline: clamp(0.7rem, 1.8vw, 1.4rem);
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.06) 0%,
-    rgba(255, 255, 255, 0.82) 14%,
-    rgba(255, 255, 255, 0.96) 100%
-  );
+  background: linear-gradient(180deg, hsl(34 21% 94%) 0%, hsl(34 21% 92%) 18%, hsl(34 18% 89%) 100%);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
+  content-visibility: auto;
+  contain-intrinsic-size: 980px;
 }
 
 .capabilities__header {
@@ -850,13 +871,14 @@
   font-size: clamp(2rem, 4vw, 3rem);
   font-weight: 700;
   letter-spacing: -0.03em;
+  color: hsl(356 34% 18%);
 }
 
 .capabilities__subtitle {
   margin: 0;
   font-size: 1.02rem;
   line-height: 1.65;
-  color: var(--muted);
+  color: hsl(356 14% 34%);
 }
 
 .capabilities__board {
@@ -891,12 +913,12 @@
   position: relative;
   overflow: hidden;
   min-height: clamp(18rem, 42vw, 27rem);
-  border: 1px solid rgba(255, 255, 255, 0.42);
+  border: 1px solid rgba(70, 30, 36, 0.12);
   border-radius: 0.25rem;
-  background: #12161f;
+  background: var(--surface-strong);
   box-shadow:
-    0 1px 0 rgba(255, 255, 255, 0.25) inset,
-    0 16px 42px rgba(15, 15, 18, 0.2);
+    0 1px 0 rgba(255, 255, 255, 0.16) inset,
+    0 16px 42px rgba(70, 30, 36, 0.14);
 }
 
 .capabilities__image {
@@ -920,8 +942,8 @@
   inset: 0;
   pointer-events: none;
   background:
-    radial-gradient(ellipse at 20% 26%, rgba(255, 255, 255, 0.32) 0%, transparent 45%),
-    linear-gradient(180deg, rgba(8, 10, 16, 0.14) 0%, rgba(8, 10, 16, 0.58) 100%);
+    radial-gradient(ellipse at 20% 26%, rgba(255, 248, 245, 0.22) 0%, transparent 45%),
+    linear-gradient(180deg, rgba(21, 4, 8, 0.12) 0%, rgba(21, 4, 8, 0.56) 100%);
 }
 
 .capabilities__visual-grid {
@@ -930,8 +952,8 @@
   pointer-events: none;
   opacity: 0.24;
   background-image:
-    linear-gradient(rgba(255, 255, 255, 0.2) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.2) 1px, transparent 1px);
+    linear-gradient(rgba(255, 255, 255, 0.16) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.16) 1px, transparent 1px);
   background-size: 36px 36px;
   mix-blend-mode: soft-light;
 }
@@ -941,12 +963,12 @@
   left: 1.35rem;
   right: 1.35rem;
   bottom: 1rem;
-  font-family: "Instrument Serif", ui-serif, Georgia, serif;
+  font-family: var(--font-sans);
   font-size: clamp(1.1rem, 2vw, 1.55rem);
   font-style: normal;
   color: rgba(255, 255, 255, 0.94);
   letter-spacing: 0.01em;
-  text-shadow: 0 8px 26px rgba(0, 0, 0, 0.45);
+  text-shadow: 0 8px 26px rgba(0, 0, 0, 0.3);
 }
 
 .capabilities__left-kicker {
@@ -959,9 +981,9 @@
   letter-spacing: 0.14em;
   text-transform: uppercase;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.74);
-  background: rgba(10, 12, 18, 0.42);
-  border: 1px solid rgba(255, 255, 255, 0.22);
+  color: rgba(255, 248, 245, 0.84);
+  background: rgba(24, 8, 12, 0.38);
+  border: 1px solid rgba(255, 255, 255, 0.16);
   border-radius: 0.2rem;
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
@@ -983,7 +1005,7 @@
   gap: 0.95rem;
   text-decoration: none;
   padding: 0.62rem 0 0.75rem;
-  border-bottom: 1px solid rgba(15, 15, 18, 0.14);
+  border-bottom: 1px solid rgba(73, 38, 41, 0.14);
   transition:
     transform 0.35s var(--ease-out),
     border-color 0.35s var(--ease-out),
@@ -992,15 +1014,15 @@
 
 .cap-rail:hover {
   transform: translateX(8px);
-  border-color: color-mix(in srgb, var(--terra) 36%, rgba(15, 15, 18, 0.18));
-  background: linear-gradient(90deg, rgba(255, 255, 255, 0.44) 0%, transparent 65%);
+  border-color: color-mix(in srgb, var(--terra) 34%, rgba(73, 38, 41, 0.12));
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.5) 0%, transparent 68%);
 }
 
 .cap-rail__index {
   font-size: 0.72rem;
   font-weight: 700;
   letter-spacing: 0.18em;
-  color: rgba(15, 15, 18, 0.42);
+  color: rgba(73, 38, 41, 0.42);
   font-variant-numeric: tabular-nums;
 }
 
@@ -1013,14 +1035,14 @@
 .cap-rail__label {
   font-size: 1.18rem;
   font-weight: 700;
-  color: rgba(15, 15, 18, 0.9);
+  color: hsl(356 34% 18%);
   letter-spacing: 0;
 }
 
 .cap-rail__hint {
   font-size: 0.9rem;
   line-height: 1.5;
-  color: rgba(15, 15, 18, 0.56);
+  color: hsl(356 12% 40%);
 }
 
 .cap-rail__line {
@@ -1033,8 +1055,8 @@
   background: linear-gradient(
     90deg,
     color-mix(in srgb, var(--terra) 48%, transparent) 0%,
-    color-mix(in srgb, var(--purple) 70%, transparent) 35%,
-    color-mix(in srgb, var(--purple) 40%, transparent) 68%,
+    color-mix(in srgb, var(--purple) 60%, transparent) 35%,
+    color-mix(in srgb, var(--purple-soft) 45%, transparent) 68%,
     transparent 100%
   );
   transform-origin: left center;
@@ -1063,11 +1085,13 @@
   padding-bottom: clamp(2.8rem, 6.5vw, 4.6rem);
   background: linear-gradient(
     180deg,
-    rgba(10, 12, 18, 0.72) 0%,
-    rgba(12, 14, 20, 0.62) 100%
+    rgba(24, 8, 12, 0.78) 0%,
+    rgba(18, 5, 9, 0.9) 100%
   );
   backdrop-filter: blur(12px) saturate(135%);
   -webkit-backdrop-filter: blur(12px) saturate(135%);
+  content-visibility: auto;
+  contain-intrinsic-size: 860px;
 }
 
 .credits__row {
@@ -1113,7 +1137,7 @@
 
 .credits__title {
   margin: 0 0 0.35rem;
-  font-family: "Syne", system-ui, sans-serif;
+  font-family: var(--font-sans);
   font-size: clamp(2rem, 3.9vw, 3.1rem);
   font-weight: 400;
   line-height: 1.05;

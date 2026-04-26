@@ -97,7 +97,13 @@ export function Capabilities() {
           viewport={{ once: true, margin: "-10%" }}
         >
           <div className="capabilities__left-inner">
-            <img className="capabilities__image" src={visualRef} alt="Referencia arquitectónica de Jipijapa" />
+            <img
+              className="capabilities__image"
+              src={visualRef}
+              alt="Referencia arquitectónica de Jipijapa"
+              loading="lazy"
+              decoding="async"
+            />
             <div className="capabilities__visual-glow" aria-hidden />
             <div className="capabilities__visual-grid" aria-hidden />
             <p className="capabilities__left-kicker">Referencia territorial</p>

@@ -16,6 +16,8 @@ export function Credits() {
             className="credits__image"
             src={creditsImage}
             alt="Imagen de créditos"
+            loading="lazy"
+            decoding="async"
           />
         </figure>
         <div className="credits__content">
