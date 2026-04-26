@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
 import visualRef from "../../Assets/portadaJipijapa.jpg";
 
 const actions = [
@@ -48,6 +49,8 @@ const railItem = {
     transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] },
   },
 };
+
+const MotionLink = motion(Link);
 
 export function Capabilities() {
   return (
@@ -120,14 +123,13 @@ export function Capabilities() {
           viewport={{ once: true, margin: "-10%" }}
         >
           {actions.map((action, index) => (
-            <motion.a
+            <MotionLink
               key={action.slug}
-              href="#"
+              to={`/servicios/${action.slug}`}
               className="cap-rail"
               data-route={action.slug}
               variants={railItem}
               whileHover={{ x: 10, scale: 1.01 }}
-              onClick={(event) => event.preventDefault()}
             >
               <span className="cap-rail__index">{String(index + 1).padStart(2, "0")}</span>
               <span className="cap-rail__content">
@@ -135,7 +137,7 @@ export function Capabilities() {
                 <span className="cap-rail__hint">{action.hint}</span>
               </span>
               <span className="cap-rail__line" aria-hidden />
-            </motion.a>
+            </MotionLink>
           ))}
         </motion.nav>
       </motion.div>

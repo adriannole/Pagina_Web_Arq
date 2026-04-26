@@ -1,10 +1,22 @@
+import { Navigate, Route, Routes } from "react-router-dom";
 import { Capabilities } from "./components/Capabilities";
 import { Credits } from "./components/Credits";
 import { Hero } from "./components/Hero";
 import { VideoBackdrop } from "./components/VideoBackdrop";
+import { ServicePage } from "./pages/ServicePage";
 import "./App.css";
 
 export default function App() {
+  return (
+    <Routes>
+      <Route path="/" element={<HomePage />} />
+      <Route path="/servicios/:slug" element={<ServicePage />} />
+      <Route path="*" element={<Navigate to="/" replace />} />
+    </Routes>
+  );
+}
+
+function HomePage() {
   return (
     <div className="app">
       <VideoBackdrop />
