@@ -20,7 +20,7 @@ export function Hero() {
         <div className="hero__col hero__col--main">
           <h1 className="hero__headline">
             <motion.span className="hero__headline-sans" custom={0} variants={rise} initial="hidden" animate="show">
-              Arquitectura
+              CLUSTER JIPIJAPA
             </motion.span>
           </h1>
           <motion.p className="hero__tagline" custom={2} variants={rise} initial="hidden" animate="show">
