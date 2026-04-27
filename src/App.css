@@ -1249,7 +1249,7 @@
   position: relative;
   display: grid;
   place-items: center;
-  min-height: 17rem;
+  min-height: clamp(18rem, 34vw, 28rem);
   border-radius: clamp(0.9rem, 1.8vw, 1.5rem);
   overflow: hidden;
   background:
@@ -1259,7 +1259,7 @@
 }
 
 .cartografia-card__media::before {
-  content: "";
+  content: none;
   position: absolute;
   inset: 0;
   opacity: 0.25;
@@ -1272,29 +1272,43 @@
 
 .cartografia-card__sheet {
   position: relative;
-  width: min(74%, 17rem);
-  aspect-ratio: 0.72;
-  border: 1px solid rgba(255, 255, 255, 0.28);
-  border-radius: 0.9rem;
+  width: min(100%, 19rem);
+  aspect-ratio: 0.707;
+  border: 0;
+  border-radius: 0.28rem;
   overflow: hidden;
-  background:
-    linear-gradient(145deg, rgba(255, 247, 244, 0.7), rgba(255, 223, 210, 0.18)),
-    linear-gradient(90deg, transparent 48%, rgba(139, 41, 66, 0.13) 49%, transparent 50%);
-  box-shadow:
-    0 1px 0 rgba(255, 255, 255, 0.55) inset,
-    0 28px 70px rgba(0, 0, 0, 0.24);
+  background: transparent;
+  box-shadow: 0 24px 58px rgba(76, 45, 40, 0.14);
   transform: rotateX(10deg) rotateY(-14deg) rotateZ(2deg);
 }
 
-.cartografia-card__sheet::after {
-  content: "PDF";
+.cartografia-card__sheet img {
   position: absolute;
-  right: 0.85rem;
-  bottom: 0.78rem;
-  color: rgba(139, 41, 66, 0.74);
-  font-size: 0.7rem;
-  font-weight: 900;
-  letter-spacing: 0.12em;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
+  border-radius: inherit;
+  background: transparent;
+  filter: saturate(0.96) contrast(1.04) brightness(0.94);
+  transform: scale(1);
+  transition:
+    transform 0.7s var(--ease-out),
+    filter 0.7s var(--ease-out);
+}
+
+.cartografia-card__button:hover .cartografia-card__sheet img {
+  filter: saturate(1.08) contrast(1.06) brightness(0.98);
+  transform: scale(1.035);
+}
+
+.cartografia-card__sheet::before {
+  content: none;
+}
+
+.cartografia-card__sheet::after {
+  content: none;
 }
 
 .cartografia-card__map-line {
@@ -1482,6 +1496,29 @@
   background: hsl(34 21% 94%);
 }
 
+.cartografia-modal__image-stage {
+  flex: 1;
+  display: grid;
+  place-items: center;
+  min-height: 0;
+  padding: clamp(1rem, 3vw, 2rem);
+  background:
+    linear-gradient(180deg, rgba(239, 235, 229, 0.82), rgba(239, 235, 229, 0.96)),
+    linear-gradient(rgba(91, 45, 42, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(91, 45, 42, 0.05) 1px, transparent 1px);
+  background-size: auto, 34px 34px, 34px 34px;
+  overflow: auto;
+}
+
+.cartografia-modal__image-stage img {
+  display: block;
+  max-width: min(100%, 62rem);
+  max-height: 100%;
+  object-fit: contain;
+  border-radius: 0.25rem;
+  box-shadow: 0 24px 70px rgba(76, 45, 40, 0.18);
+}
+
 .cartografia-modal__open {
   display: none;
   padding: 0.9rem 1rem 1rem;
@@ -1603,8 +1640,8 @@
 }
 
 .cartografia {
-  --cartografia-bone: hsl(34 21% 94%);
-  --cartografia-bone-deep: hsl(34 19% 88%);
+  --cartografia-bone: hsl(34 21% 92%);
+  --cartografia-bone-deep: hsl(34 21% 92%);
   --cartografia-paper: hsl(34 28% 97%);
   --cartografia-red: hsl(356 54% 20%);
   --cartografia-red-soft: hsl(12 62% 66%);
@@ -1612,9 +1649,9 @@
   --cartografia-muted: hsl(356 12% 38%);
   color: var(--cartografia-ink);
   background:
-    radial-gradient(90% 64% at 82% 6%, rgba(194, 90, 72, 0.2) 0%, transparent 56%),
-    radial-gradient(72% 52% at 6% 20%, rgba(255, 255, 255, 0.86) 0%, transparent 62%),
-    linear-gradient(180deg, var(--cartografia-bone) 0%, hsl(34 20% 91%) 46%, var(--cartografia-bone-deep) 100%);
+    radial-gradient(90% 64% at 82% 6%, rgba(255, 255, 255, 0.42) 0%, transparent 56%),
+    radial-gradient(72% 52% at 6% 20%, rgba(255, 255, 255, 0.7) 0%, transparent 62%),
+    linear-gradient(180deg, hsl(34 21% 92%) 0%, hsl(34 21% 92%) 100%);
 }
 
 .cartografia::before {
@@ -1711,9 +1748,9 @@
   inset: 0;
   z-index: 1;
   background:
-    linear-gradient(90deg, rgba(244, 237, 228, 0.74) 0%, rgba(244, 237, 228, 0.46) 42%, rgba(244, 237, 228, 0.2) 100%),
-    radial-gradient(70% 70% at 76% 32%, rgba(194, 90, 72, 0.18), transparent 58%),
-    linear-gradient(180deg, rgba(255, 250, 246, 0.48), rgba(238, 229, 218, 0.42));
+    linear-gradient(90deg, rgba(239, 235, 229, 0.78) 0%, rgba(239, 235, 229, 0.5) 42%, rgba(239, 235, 229, 0.22) 100%),
+    radial-gradient(70% 70% at 76% 32%, rgba(255, 255, 255, 0.16), transparent 58%),
+    linear-gradient(180deg, rgba(239, 235, 229, 0.5), rgba(239, 235, 229, 0.44));
 }
 
 .cartografia__hero-backdrop::after {
@@ -2106,11 +2143,9 @@
 }
 
 .cartografia-card__media {
-  border: 1px solid rgba(139, 41, 66, 0.09);
-  border-radius: 0.45rem;
-  background:
-    linear-gradient(145deg, rgba(255, 250, 246, 0.86), rgba(238, 228, 216, 0.58)),
-    radial-gradient(circle at 20% 12%, rgba(255, 255, 255, 0.72), transparent 46%);
+  border: 0;
+  border-radius: 0;
+  background: transparent;
 }
 
 .cartografia-card__media::before {
@@ -3252,6 +3287,92 @@
 
   .cartografia__footer {
     padding: 1.6rem 1rem 2rem;
+  }
+}
+
+.cartografia {
+  background: hsl(34 21% 92%);
+}
+
+.cartografia::after {
+  background: linear-gradient(180deg, rgba(239, 235, 229, 0.18), rgba(239, 235, 229, 0.34));
+}
+
+.cartografia__orb {
+  opacity: 0.26;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.62), rgba(239, 235, 229, 0.08) 68%);
+  box-shadow: none;
+}
+
+.cartografia__orb--one,
+.cartografia__orb--two,
+.cartografia__orb--three {
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.58), rgba(239, 235, 229, 0.08) 70%);
+}
+
+.cartografia__hero-backdrop::before {
+  background:
+    linear-gradient(90deg, rgba(239, 235, 229, 0.82) 0%, rgba(239, 235, 229, 0.58) 42%, rgba(239, 235, 229, 0.34) 100%),
+    linear-gradient(180deg, rgba(239, 235, 229, 0.56), rgba(239, 235, 229, 0.5));
+}
+
+.cartografia__hero-backdrop::after {
+  opacity: 0.12;
+}
+
+.cartografia-card__media {
+  min-height: clamp(18rem, 32vw, 27rem);
+  transform: translateZ(18px);
+}
+
+.cartografia-card__media::before,
+.cartografia-card__media::after {
+  content: none;
+}
+
+.cartografia-card__sheet {
+  width: clamp(13rem, 22vw, 20.5rem);
+  max-width: 100%;
+  border-radius: 0.18rem;
+  box-shadow:
+    0 18px 44px rgba(76, 45, 40, 0.13),
+    0 1px 0 rgba(255, 255, 255, 0.72) inset;
+  transform: translate3d(0, 0, 0);
+}
+
+.cartografia-card__sheet img {
+  filter: saturate(1) contrast(1.02) brightness(0.98);
+}
+
+.cartografia-card__button:hover .cartografia-card__sheet {
+  box-shadow:
+    0 24px 58px rgba(76, 45, 40, 0.18),
+    0 0 0 1px rgba(139, 41, 66, 0.08);
+  transform: translate3d(0, -4px, 0) scale(1.012);
+}
+
+.cartografia-card__button:hover .cartografia-card__sheet img {
+  filter: saturate(1.04) contrast(1.03) brightness(1);
+  transform: scale(1.015);
+}
+
+@media (max-width: 900px) {
+  .cartografia-card__media {
+    min-height: clamp(17rem, 56vw, 25rem);
+  }
+
+  .cartografia-card__sheet {
+    width: min(72vw, 18rem);
+  }
+}
+
+@media (max-width: 560px) {
+  .cartografia-card__media {
+    min-height: 17rem;
+  }
+
+  .cartografia-card__sheet {
+    width: min(72vw, 15rem);
   }
 }
 

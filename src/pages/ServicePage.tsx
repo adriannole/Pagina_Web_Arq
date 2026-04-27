@@ -16,62 +16,72 @@ type CartografiaPdf = {
   category: string;
   description: string;
   file: string;
+  thumbnail?: string;
 };
 
 const cartografiaPdfs: CartografiaPdf[] = [
   {
-    title: "Lectura territorial",
-    category: "Contexto 01",
-    description: "Capas base para entender escala urbana, paisaje y condiciones iniciales del entorno.",
-    file: "/pdfs/cartografia/01-lectura-territorial.pdf",
+    title: "Dinamicas Economicas y Uso del Suelo",
+    category: "Lamina de Dinamica Espacial",
+    description: "Análisis de actividades económicas, usos de suelo y dinámicas sociales que configuran el territorio.",
+    file: "/img/lamina-dinamica-espacial.webp",
+    thumbnail: "/img/foto1.webp",
   },
   {
-    title: "Topografia y relieve",
-    category: "Contexto 02",
-    description: "Análisis de pendientes, cotas y comportamiento físico del terreno para la implantación.",
-    file: "/pdfs/cartografia/02-topografia-relieve.pdf",
+    title: "Analisis Social y de Vulnerabilidad",
+    category: "Lamina de Dinamica Espacial",
+    description: "Mapa de actores, redes sociales, vulnerabilidades y potencialidades comunitarias del sector.",
+    file: "/img/lamina-dinamica-espacial2.webp",
+    thumbnail: "/img/foto2.webp",
   },
   {
-    title: "Morfologia urbana",
-    category: "Contexto 03",
-    description: "Relación entre llenos, vacíos, tejidos construidos y bordes activos del sector.",
-    file: "/pdfs/cartografia/03-morfologia-urbana.pdf",
+    title: "Morfologia Urbana",
+    category: "Lamina de Analisis Urbano",
+    description: "Cartografía de formas urbanas, tipologías edificatorias, vacíos y estructuras espaciales del entorno.",
+    file: "/img/Morfologia-Urbana.webp",
+    thumbnail: "/img/foto1.webp",
   },
   {
-    title: "Movilidad y accesos",
-    category: "Conexiones 04",
-    description: "Flujos peatonales, vehiculares, rutas de llegada y nodos de conexión relevantes.",
-    file: "/pdfs/cartografia/04-movilidad-accesos.pdf",
+    title: "Mapeo del Usuario y Dinamica Espacial",
+    category: "Diagnostico Morfologico y Social",
+    description: "Cartografía de flujos, recorridos, percepciones y relaciones sociales para entender la experiencia del usuario.",
+    file: "/img/Laminapercepcion delusuario.webp",
+    thumbnail: "/img/foto2.webp",
   },
   {
-    title: "Asoleamiento y clima",
-    category: "Ambiente 05",
-    description: "Lectura ambiental para orientar decisiones de confort, sombra y exposición solar.",
-    file: "/pdfs/cartografia/05-asoleamiento-clima.pdf",
+    title: "Analisis de Flujo, Puntos Criticos y Esrategias de Intervencion",
+    category: "Lamina de Accesos",
+    description: "Mapa de accesos, flujos peatonales y vehiculares, puntos críticos de congestión y estrategias de mejora urbana.",
+    file: "/img/laminadeaccesos.webp",
+    thumbnail: "/img/foto1.webp",
   },
   {
-    title: "Equipamientos cercanos",
-    category: "Programa 06",
-    description: "Mapa de servicios, hitos y piezas urbanas que estructuran la vida cotidiana.",
-    file: "/pdfs/cartografia/06-equipamientos-cercanos.pdf",
+    title: "Mapeo del Usuario y Dinamica Espacial",
+    category: "Diagnostico Morfologico y Social",
+    description: "Cartografía de flujos, recorridos, percepciones y relaciones sociales para entender la experiencia del usuario.",
+    file: "/img/Laminapercepciondelusuario.webp",
+    thumbnail: "/img/foto2.webp",
   },
   {
-    title: "Normativa y restricciones",
-    category: "Tecnico 07",
-    description: "Síntesis de condicionantes normativas, retiros, alturas y parámetros de ocupación.",
-    file: "/pdfs/cartografia/07-normativa-restricciones.pdf",
+    title: "Cartografia de Infraestructuras Verde",
+    category: "Diagnostico de especies zonificacion y nodos de conexion urbana",
+    description: "Mapa de vegetación, especies nativas, corredores verdes y nodos de conexión ecológica para integrar naturaleza y ciudad.",
+    file: "/img/Cartografiadeinfrestructurasverdes.webp",
+    thumbnail: "/img/foto1.webp",
   },
   {
-    title: "Oportunidades de implantacion",
-    category: "Estrategia 08",
-    description: "Cruce de datos para detectar zonas de potencial, tensión y respuesta arquitectónica.",
-    file: "/pdfs/cartografia/08-oportunidades-implantacion.pdf",
+    title: "Determinantes ambientales y confort termico",
+    category: "Lamina Climatologica",
+    description: "Cartografía de condiciones climáticas, asoleamiento, vientos predominantes y estrategias de confort térmico para el diseño ambientalmente responsable.",
+    file: "/img/LAMINACLIMATICA.webp",
+    thumbnail: "/img/foto2.webp",
   },
   {
-    title: "Sintesis cartografica",
-    category: "Cierre 09",
-    description: "Documento integrador con criterios de diseño derivados del análisis territorial.",
-    file: "/pdfs/cartografia/09-sintesis-cartografica.pdf",
+    title: "Analisis de la Imagen Urbana: Elementos de Composicion",
+    category: "Lamina de Vistas",
+    description: "Cartografía de vistas, hitos visuales, elementos compositivos y estrategias de diseño para potenciar la imagen urbana y la identidad del lugar.",
+    file: "/img/LAMINADEVISTAS.webp",
+    thumbnail: "/img/foto1.webp",
   },
 ];
 
@@ -113,6 +123,8 @@ const serviceContent: Record<ServiceKey, ServiceContent> = {
     ],
   },
 };
+
+const isImageFile = (file: string) => /\.(avif|webp|png|jpe?g|gif|svg)$/i.test(file);
 
 export function ServicePage() {
   const { slug } = useParams<{ slug: ServiceKey }>();
@@ -314,10 +326,12 @@ function CartografiaPortfolio() {
                 <span className="cartografia-card__halo" aria-hidden />
                 <span className="cartografia-card__media" aria-hidden>
                   <span className="cartografia-card__sheet">
-                    <span className="cartografia-card__map-line cartografia-card__map-line--one" />
-                    <span className="cartografia-card__map-line cartografia-card__map-line--two" />
-                    <span className="cartografia-card__map-line cartografia-card__map-line--three" />
-                    <span className="cartografia-card__pin" />
+                    <img
+                      src={pdf.thumbnail ?? cartografiaHeroImage}
+                      alt=""
+                      loading="lazy"
+                      decoding="async"
+                    />
                   </span>
                 </span>
                 <span className="cartografia-card__content">
@@ -400,9 +414,15 @@ function CartografiaPortfolio() {
                   Cerrar
                 </button>
               </div>
-              <iframe className="cartografia-modal__frame" title={activePdf.title} src={activePdf.file} loading="lazy" />
+              {isImageFile(activePdf.file) ? (
+                <div className="cartografia-modal__image-stage">
+                  <img src={activePdf.file} alt={activePdf.title} loading="lazy" decoding="async" />
+                </div>
+              ) : (
+                <iframe className="cartografia-modal__frame" title={activePdf.title} src={activePdf.file} loading="lazy" />
+              )}
               <a className="cartografia-modal__open" href={activePdf.file} target="_blank" rel="noreferrer">
-                Abrir PDF en nueva pestaña
+                {isImageFile(activePdf.file) ? "Abrir imagen en nueva pestaña" : "Abrir PDF en nueva pestaña"}
               </a>
             </motion.div>
           </motion.div>
