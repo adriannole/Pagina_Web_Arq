@@ -315,6 +315,41 @@ function CartografiaPortfolio() {
         </div>
       </section>
 
+      <motion.section
+        className="cartografia__archive"
+        aria-labelledby="cartografia-archive-title"
+        initial={{ opacity: 0, y: 34 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, amount: 0.24 }}
+        transition={{ duration: 0.72, ease: [0.22, 1, 0.36, 1] }}
+      >
+        <div className="cartografia__archive-copy">
+          <p>Recursos del expediente</p>
+          <h2 id="cartografia-archive-title">Descarga y consulta las 9 láminas PDF.</h2>
+          <span>
+            El recorrido visual funciona como presentación, y esta biblioteca final concentra los documentos para una
+            revisión técnica directa.
+          </span>
+        </div>
+
+        <div className="cartografia__archive-grid">
+          {cartografiaPdfs.map((pdf, index) => (
+            <a className="cartografia-resource" href={pdf.file} target="_blank" rel="noreferrer" key={pdf.file}>
+              <span>{String(index + 1).padStart(2, "0")}</span>
+              <strong>{pdf.title}</strong>
+              <small>{pdf.category}</small>
+            </a>
+          ))}
+        </div>
+      </motion.section>
+
+      <footer className="site-foot cartografia__footer" id="contacto">
+        <p className="site-foot__text">Jipijapa, Quito — arquitectura y territorio.</p>
+        <a className="site-foot__link" href="mailto:hola@ejemplo.com">
+          hola@ejemplo.com
+        </a>
+      </footer>
+
       <AnimatePresence>
         {activePdf ? (
           <motion.div
