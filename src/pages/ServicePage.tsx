@@ -1,6 +1,7 @@
 import { AnimatePresence, motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
+import cartografiaHeroImage from "../../Assets/portadaJipijapa.jpg";
 
 type ServiceKey = "cartografia" | "propuesta" | "ubicacion" | "propuesta-grafica";
 
@@ -249,6 +250,22 @@ function CartografiaPortfolio() {
         </motion.div>
 
         <div className="cartografia__hero-stage" aria-hidden>
+          <motion.figure
+            className="cartografia__hero-preview"
+            initial={{ opacity: 0, y: 28, rotateY: -10 }}
+            animate={{ opacity: 1, y: 0, rotateY: -8 }}
+            transition={{ duration: 0.9, delay: 0.16, ease: [0.22, 1, 0.36, 1] }}
+          >
+            <span className="cartografia__hero-photo cartografia__hero-photo--back">
+              <img src={cartografiaHeroImage} alt="" loading="eager" decoding="async" />
+            </span>
+            <span className="cartografia__hero-photo cartografia__hero-photo--middle">
+              <img src={cartografiaHeroImage} alt="" loading="eager" decoding="async" />
+            </span>
+            <img src={cartografiaHeroImage} alt="" loading="eager" decoding="async" />
+            <span className="cartografia__hero-preview-grid" />
+            <span className="cartografia__hero-preview-label">Cartografia / Jipijapa</span>
+          </motion.figure>
           <motion.span
             className="cartografia__glass-shard cartografia__glass-shard--large"
             animate={shouldReduceMotion ? undefined : { y: [0, -18, 0], rotate: [8, 13, 8] }}
