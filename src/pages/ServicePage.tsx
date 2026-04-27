@@ -202,6 +202,9 @@ function CartografiaPortfolio() {
       </header>
 
       <section className="cartografia__hero" aria-labelledby="cartografia-title">
+        <div className="cartografia__hero-backdrop" aria-hidden>
+          <img src={cartografiaHeroImage} alt="" loading="eager" decoding="async" />
+        </div>
         <motion.div
           className="cartografia__hero-inner"
           style={{ y: indexY, opacity: indexOpacity }}
