@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import creditsImage from "../../Assets/CREDITOS.png";
+import creditsImage from "../../Assets/CREDITOS.jpeg";
 
 export function Credits() {
   return (

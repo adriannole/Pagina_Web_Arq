@@ -8,7 +8,13 @@
   z-index: 1;
 }
 
-.video-backdrop {
+.route-loading {
+  min-height: 100vh;
+  background: hsl(34 21% 92%);
+}
+
+.video-backdrop,
+.image-backdrop {
   position: fixed;
   inset: 0;
   z-index: 0;
@@ -16,7 +22,8 @@
   background: var(--bg-deep);
 }
 
-.video-backdrop::before {
+.video-backdrop::before,
+.image-backdrop::before {
   content: "";
   position: absolute;
   inset: -8% -12%;
@@ -36,7 +43,8 @@
   animation: hero-ambient-drift 13s ease-in-out infinite alternate;
 }
 
-.video-backdrop__video {
+.video-backdrop__video,
+.image-backdrop__image {
   position: absolute;
   inset: -5%;
   z-index: 0;
@@ -220,6 +228,73 @@
 
 .video-backdrop--lite .video-backdrop__wash {
   opacity: 0.82;
+}
+
+.video-backdrop--still .video-backdrop__video--overlay {
+  display: none;
+}
+
+.video-backdrop--still .video-backdrop__video {
+  filter: saturate(1.02) contrast(1.04) brightness(0.72);
+}
+
+.video-backdrop--still .video-backdrop__grade,
+.video-backdrop--still .video-backdrop__wash {
+  opacity: 0.62;
+}
+
+body.chrome-lite .image-backdrop::before,
+body.chrome-lite .video-backdrop__beam,
+body.chrome-lite .video-backdrop__grade,
+body.chrome-lite .video-backdrop__wash,
+body.chrome-lite .cartografia__orb,
+body.chrome-lite .cartografia-card__button,
+body.chrome-lite .cartografia-card__button::before,
+body.chrome-lite .cartografia-card__sheet,
+body.chrome-lite .cartografia-card__pin,
+body.chrome-lite .cartografia__portfolio-head::after {
+  animation: none !important;
+}
+
+body.chrome-lite .video-backdrop__beam,
+body.chrome-lite .video-backdrop__grain,
+body.chrome-lite .cartografia__grid {
+  display: none;
+}
+
+body.chrome-lite .image-backdrop__image,
+body.chrome-lite .cartografia__hero-backdrop img,
+body.chrome-lite .cartografia-card__sheet img,
+body.chrome-lite .cartografia__hero-preview img {
+  filter: none;
+}
+
+body.chrome-lite .topbar--dark,
+body.chrome-lite .glass-panel,
+body.chrome-lite .glass-panel--dark,
+body.chrome-lite .glass-pill,
+body.chrome-lite .hero__manifesto,
+body.chrome-lite .cartografia__topbar,
+body.chrome-lite .cartografia__index a,
+body.chrome-lite .cartografia-card__button,
+body.chrome-lite .cartografia__archive,
+body.chrome-lite .cartografia-modal__backdrop,
+body.chrome-lite .cartografia-modal__panel {
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+body.chrome-lite .cartografia-card__button,
+body.chrome-lite .cartografia__hero-preview,
+body.chrome-lite .cartografia__archive {
+  box-shadow: 0 18px 48px rgba(76, 45, 40, 0.12);
+}
+
+body.chrome-lite .cartografia-card,
+body.chrome-lite .capabilities,
+body.chrome-lite .credits {
+  content-visibility: auto;
+  contain-intrinsic-size: 780px;
 }
 
 .glass-panel {

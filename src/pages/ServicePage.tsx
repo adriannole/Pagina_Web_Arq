@@ -85,6 +85,12 @@ const cartografiaPdfs: CartografiaPdf[] = [
   },
 ];
 
+const cartografiaHeroStack = [
+  "/img/lamina-dinamica-espacial.webp",
+  "/img/Morfologia-Urbana.webp",
+  "/img/LAMINACLIMATICA.webp",
+] as const;
+
 const serviceContent: Record<ServiceKey, ServiceContent> = {
   cartografia: {
     title: "Cartografía",
@@ -229,8 +235,7 @@ function CartografiaPortfolio() {
             Portafolio Cartográfico
           </h1>
           <p className="cartografia__intro">
-            Una secuencia profesional de 9 láminas PDF que se despliegan como un portafolio arquitectónico continuo:
-            claro, técnico y con acentos rojos sobre una base hueso.
+            Índice
           </p>
 
           <motion.ol
@@ -272,12 +277,12 @@ function CartografiaPortfolio() {
             transition={{ duration: 0.9, delay: 0.16, ease: [0.22, 1, 0.36, 1] }}
           >
             <span className="cartografia__hero-photo cartografia__hero-photo--back">
-              <img src={cartografiaHeroImage} alt="" loading="eager" decoding="async" />
+              <img src={cartografiaHeroStack[1]} alt="" loading="lazy" decoding="async" />
             </span>
             <span className="cartografia__hero-photo cartografia__hero-photo--middle">
-              <img src={cartografiaHeroImage} alt="" loading="eager" decoding="async" />
+              <img src={cartografiaHeroStack[2]} alt="" loading="lazy" decoding="async" />
             </span>
-            <img src={cartografiaHeroImage} alt="" loading="eager" decoding="async" />
+            <img src={cartografiaHeroStack[0]} alt="" loading="eager" decoding="async" />
             <span className="cartografia__hero-preview-grid" />
             <span className="cartografia__hero-preview-label">Cartografia / Jipijapa</span>
           </motion.figure>
@@ -303,10 +308,9 @@ function CartografiaPortfolio() {
           transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
         >
           <p>Portafolio completo</p>
-          <h2>9 láminas, una lectura territorial.</h2>
+          <h2>Láminas Cartografía</h2>
           <span>
-            Cada documento aparece como una pieza editorial del mismo expediente; al hacer scroll, las láminas se
-            acumulan como un portafolio físico hasta completar la serie.
+            Serie visual de análisis territorial presentada como portafolio técnico y arquitectónico.
           </span>
         </motion.div>
 
