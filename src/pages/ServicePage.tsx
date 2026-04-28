@@ -1,5 +1,5 @@
-import { AnimatePresence, motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
-import { useEffect, useState } from "react";
+import { AnimatePresence, motion, MotionConfig, useReducedMotion } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import cartografiaHeroImage from "../../Assets/portadaJipijapa.jpg";
 
@@ -177,9 +177,39 @@ export function ServicePage() {
 function CartografiaPortfolio() {
   const [activePdf, setActivePdf] = useState<CartografiaPdf | null>(null);
   const shouldReduceMotion = useReducedMotion();
-  const { scrollYProgress } = useScroll();
-  const indexY = useTransform(scrollYProgress, [0, 0.28], [0, shouldReduceMotion ? 0 : -120]);
-  const indexOpacity = useTransform(scrollYProgress, [0, 0.22], [1, 0.2]);
+  // Parallax via native scroll: avoids Framer Motion MotionValue subscription
+  // that triggers React re-renders every frame.
+  const heroInnerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (shouldReduceMotion) return;
+
+    let rafId = 0;
+    let lastY = 0;
+
+    const onScroll = () => {
+      // requestAnimationFrame batches the DOM write to the next paint — 60fps cap
+      cancelAnimationFrame(rafId);
+      rafId = requestAnimationFrame(() => {
+        const y = window.scrollY;
+        if (Math.abs(y - lastY) < 1) return; // skip sub-pixel changes
+        lastY = y;
+        const progress = Math.min(y / (window.innerHeight * 0.28), 1);
+        const translateY = progress * -120;
+        const opacity = 1 - progress * 0.8;
+        if (heroInnerRef.current) {
+          heroInnerRef.current.style.transform = `translateY(${translateY}px)`;
+          heroInnerRef.current.style.opacity = String(Math.max(opacity, 0.2));
+        }
+      });
+    };
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      cancelAnimationFrame(rafId);
+    };
+  }, [shouldReduceMotion]);
 
   useEffect(() => {
     if (!activePdf) {
@@ -202,6 +232,7 @@ function CartografiaPortfolio() {
   }, [activePdf]);
 
   return (
+    <MotionConfig reducedMotion="user" transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}>
     <main className="cartografia">
       <div className="cartografia__ambient" aria-hidden>
         <span className="cartografia__orb cartografia__orb--one" />
@@ -221,11 +252,12 @@ function CartografiaPortfolio() {
 
       <section className="cartografia__hero" aria-labelledby="cartografia-title">
         <div className="cartografia__hero-backdrop" aria-hidden>
-          <img src={cartografiaHeroImage} alt="" loading="eager" decoding="async" />
+          <img src={cartografiaHeroImage} alt="" loading="eager" decoding="async" fetchPriority="high" />
         </div>
+        {/* ref-based parallax — no React re-renders on scroll */}
         <motion.div
+          ref={heroInnerRef}
           className="cartografia__hero-inner"
-          style={{ y: indexY, opacity: indexOpacity }}
           initial={{ opacity: 0, y: 34 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
@@ -433,5 +465,6 @@ function CartografiaPortfolio() {
         ) : null}
       </AnimatePresence>
     </main>
+    </MotionConfig>
   );
 }

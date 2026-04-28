@@ -1,4 +1,4 @@
-import { motion } from "framer-motion";
+import { memo, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import visualRef from "../../Assets/portadaJipijapa.jpg";
 
@@ -25,80 +25,94 @@ const actions = [
   },
 ] as const;
 
-const reveal = {
-  hidden: { opacity: 0, y: 24 },
-  show: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.75, ease: [0.22, 1, 0.36, 1] },
-  },
-};
+// useInView hook using IntersectionObserver instead of Framer Motion's whileInView.
+// IntersectionObserver runs on a separate thread and doesn't trigger React re-renders.
+function useRevealOnScroll(threshold = 0.12) {
+  const ref = useRef<HTMLElement>(null);
 
-const railContainer = {
-  hidden: {},
-  show: {
-    transition: { staggerChildren: 0.1, delayChildren: 0.12 },
-  },
-};
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
 
-const railItem = {
-  hidden: { opacity: 0, x: 26 },
-  show: {
-    opacity: 1,
-    x: 0,
-    transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] },
-  },
-};
+    // Check for reduced motion preference
+    const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (prefersReduced) {
+      el.dataset.visible = "true";
+      return;
+    }
 
-const MotionLink = motion(Link);
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.setAttribute("data-visible", "true");
+            // Once visible, stop observing — matches framer-motion's once:true
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold, rootMargin: "-12% 0px" }
+    );
 
-export function Capabilities() {
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [threshold]);
+
+  return ref;
+}
+
+export const Capabilities = memo(function Capabilities() {
+  const sectionRef = useRevealOnScroll(0.1) as React.RefObject<HTMLElement>;
+  const boardRef = useRef<HTMLDivElement>(null);
+  const railRef = useRef<HTMLElement>(null);
+
+  // Stagger rail items using CSS custom property instead of Framer Motion stagger
+  useEffect(() => {
+    const board = boardRef.current;
+    if (!board) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.setAttribute("data-visible", "true");
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.1, rootMargin: "-10% 0px" }
+    );
+
+    observer.observe(board);
+    return () => observer.disconnect();
+  }, []);
+
   return (
-    <section className="section capabilities" id="capacidades">
+    <section
+      ref={sectionRef as React.RefObject<HTMLDivElement>}
+      className="section capabilities"
+      id="capacidades"
+    >
       <div className="capabilities__header">
-        <motion.p
-          className="capabilities__eyebrow glass-pill glass-pill--light"
-          initial={{ opacity: 0, y: 12 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-12%" }}
-          transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
+        <p
+          className="capabilities__eyebrow glass-pill glass-pill--light cap-reveal cap-reveal--0"
+          data-visible={undefined}
         >
           Capacidades
-        </motion.p>
-        <motion.h2
-          className="capabilities__title"
-          initial={{ opacity: 0, y: 22 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-12%" }}
-          transition={{ duration: 0.75, delay: 0.05, ease: [0.22, 1, 0.36, 1] }}
-        >
+        </p>
+        <h2 className="capabilities__title cap-reveal cap-reveal--1">
           Servicios y conceptos
-        </motion.h2>
-        <motion.p
-          className="capabilities__subtitle"
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-12%" }}
-          transition={{ duration: 0.7, delay: 0.12, ease: [0.22, 1, 0.36, 1] }}
-        >
+        </h2>
+        <p className="capabilities__subtitle cap-reveal cap-reveal--2">
           Plataforma de trabajo para diseñar desde el territorio: análisis, concepto y comunicación del proyecto.
-        </motion.p>
+        </p>
       </div>
 
-      <motion.div
-        className="capabilities__board"
-        initial={{ opacity: 0, y: 24, scale: 0.985 }}
-        whileInView={{ opacity: 1, y: 0, scale: 1 }}
-        viewport={{ once: true, margin: "-10%" }}
-        transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+      <div
+        ref={boardRef}
+        className="capabilities__board cap-board"
       >
-        <motion.figure
-          className="capabilities__left"
-          variants={reveal}
-          initial="hidden"
-          whileInView="show"
-          viewport={{ once: true, margin: "-10%" }}
-        >
+        <figure className="capabilities__left cap-reveal-item">
           <div className="capabilities__left-inner">
             <img
               className="capabilities__image"
@@ -110,26 +124,21 @@ export function Capabilities() {
             <div className="capabilities__visual-glow" aria-hidden />
             <div className="capabilities__visual-grid" aria-hidden />
             <p className="capabilities__left-kicker">Referencia territorial</p>
-
           </div>
-        </motion.figure>
+        </figure>
 
-        <motion.nav
+        <nav
+          ref={railRef as React.RefObject<HTMLElement>}
           className="capabilities__rail"
           aria-label="Líneas de trabajo"
-          variants={railContainer}
-          initial="hidden"
-          whileInView="show"
-          viewport={{ once: true, margin: "-10%" }}
         >
           {actions.map((action, index) => (
-            <MotionLink
+            <Link
               key={action.slug}
               to={`/servicios/${action.slug}`}
-              className="cap-rail"
+              className="cap-rail cap-rail-item"
               data-route={action.slug}
-              variants={railItem}
-              whileHover={{ x: 10, scale: 1.01 }}
+              style={{ "--rail-i": index } as React.CSSProperties}
             >
               <span className="cap-rail__index">{String(index + 1).padStart(2, "0")}</span>
               <span className="cap-rail__content">
@@ -137,10 +146,10 @@ export function Capabilities() {
                 <span className="cap-rail__hint">{action.hint}</span>
               </span>
               <span className="cap-rail__line" aria-hidden />
-            </MotionLink>
+            </Link>
           ))}
-        </motion.nav>
-      </motion.div>
+        </nav>
+      </div>
     </section>
   );
-}
+});

@@ -1,46 +1,55 @@
-import { motion } from "framer-motion";
+import { memo, useEffect, useRef } from "react";
 
-const rise = {
-  hidden: { opacity: 0, y: 28 },
-  show: (i: number) => ({
-    opacity: 1,
-    y: 0,
-    transition: {
-      delay: 0.08 + i * 0.07,
-      duration: 0.9,
-      ease: [0.22, 1, 0.36, 1],
-    },
-  }),
-};
+// CSS-based enter animations instead of Framer Motion.
+// Reason: framer-motion uses JS to drive animations which requires React
+// reconciliation + style calculation on every frame during the animation.
+// CSS @keyframes run entirely on the compositor thread — zero JS cost.
+//
+// The trade-off: we lose the JS-controllable variants but gain guaranteed
+// 60fps entry animations even on slow Chrome instances.
 
-export function Hero() {
+export const Hero = memo(function Hero() {
+  const sectionRef = useRef<HTMLElement>(null);
+
+  // Trigger CSS entry animations once the component mounts.
+  // Using a ref instead of state prevents re-renders.
+  useEffect(() => {
+    const section = sectionRef.current;
+    if (!section) return;
+    // rAF ensures the browser has painted at least one frame before animating
+    const rafId = requestAnimationFrame(() => {
+      section.dataset.ready = "true";
+    });
+    return () => cancelAnimationFrame(rafId);
+  }, []);
+
   return (
-    <section className="section hero hero--cinematic" id="inicio">
+    <section
+      ref={sectionRef}
+      className="section hero hero--cinematic"
+      id="inicio"
+    >
       <div className="hero__bottom">
         <div className="hero__col hero__col--main">
           <h1 className="hero__headline">
-            <motion.span className="hero__headline-sans" custom={0} variants={rise} initial="hidden" animate="show">
+            <span className="hero__headline-sans hero__anim hero__anim--0">
               CLUSTER JIPIJAPA
-            </motion.span>
+            </span>
           </h1>
-          <motion.p className="hero__tagline" custom={2} variants={rise} initial="hidden" animate="show">
+          <p className="hero__tagline hero__anim hero__anim--2">
             Proyecto claro, escala humana y materialidad anclada en Jipijapa.
-          </motion.p>
+          </p>
         </div>
 
         <div className="hero__col hero__col--aside">
-          <motion.a
-            className="hero__schedule"
+          <a
+            className="hero__schedule hero__anim hero__anim--3"
             href="#contacto"
-            custom={3}
-            variants={rise}
-            initial="hidden"
-            animate="show"
           >
             Agendar conversación
-          </motion.a>
+          </a>
         </div>
       </div>
     </section>
   );
-}
+});

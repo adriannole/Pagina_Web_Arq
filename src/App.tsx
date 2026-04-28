@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect } from "react";
+import { lazy, memo, Suspense, useEffect } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 import { Capabilities } from "./components/Capabilities";
 import { Credits } from "./components/Credits";
@@ -6,14 +6,27 @@ import { Hero } from "./components/Hero";
 import { VideoBackdrop } from "./components/VideoBackdrop";
 import "./App.css";
 
-const ServicePage = lazy(() => import("./pages/ServicePage").then((module) => ({ default: module.ServicePage })));
+const ServicePage = lazy(() =>
+  import("./pages/ServicePage").then((module) => ({ default: module.ServicePage }))
+);
 
 export default function App() {
   useEffect(() => {
-    const isChrome = /Chrome\//.test(navigator.userAgent) && !/Edg\//.test(navigator.userAgent);
-    document.body.classList.toggle("chrome-lite", isChrome);
+    // Precise Chrome detection (not Edge, not Opera, not Samsung browser)
+    const ua = navigator.userAgent;
+    const isChrome =
+      /Chrome\//.test(ua) &&
+      !/Edg\//.test(ua) &&
+      !/OPR\//.test(ua) &&
+      !/SamsungBrowser\//.test(ua);
+
+    if (isChrome) {
+      document.documentElement.classList.add("chrome-lite");
+      document.body.classList.add("chrome-lite");
+    }
 
     return () => {
+      document.documentElement.classList.remove("chrome-lite");
       document.body.classList.remove("chrome-lite");
     };
   }, []);
@@ -34,7 +47,8 @@ export default function App() {
   );
 }
 
-function HomePage() {
+// memo prevents re-render when parent re-renders — Hero/Capabilities/Credits are static
+const HomePage = memo(function HomePage() {
   return (
     <div className="app">
       <VideoBackdrop />
@@ -64,4 +78,4 @@ function HomePage() {
       </div>
     </div>
   );
-}
+});
