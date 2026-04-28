@@ -8,43 +8,55 @@
   z-index: 1;
 }
 
-.video-backdrop {
+.route-loading {
+  min-height: 100vh;
+  background: hsl(34 21% 92%);
+}
+
+.video-backdrop,
+.image-backdrop {
   position: fixed;
   inset: 0;
   z-index: 0;
   overflow: hidden;
   background: var(--bg-deep);
+  /* Single GPU compositing layer for the entire backdrop */
+  transform: translateZ(0);
+  will-change: transform;
+  contain: strict;
+  /* isolation without blend-mode — avoids extra stacking contexts */
+  isolation: isolate;
 }
 
-.video-backdrop::before {
+/* ::before: static warm-light overlay — no animation, no blend mode.
+   Removed mix-blend-mode: screen because it creates a separate compositing
+   layer that Chrome cannot batch with transform/opacity animations. */
+.video-backdrop::before,
+.image-backdrop::before {
   content: "";
   position: absolute;
-  inset: -8% -12%;
+  inset: 0;
   z-index: 1;
   pointer-events: none;
-  opacity: 0.62;
-  mix-blend-mode: screen;
+  opacity: 0.55;
   background:
-    conic-gradient(
-      from 88deg at 72% 24%,
-      rgba(255, 211, 193, 0.42) 0deg,
-      transparent 132deg,
-      rgba(194, 90, 72, 0.34) 232deg,
-      transparent 360deg
-    ),
-    radial-gradient(95% 70% at 20% 38%, rgba(255, 244, 239, 0.3) 0%, transparent 58%);
-  animation: hero-ambient-drift 13s ease-in-out infinite alternate;
+    radial-gradient(ellipse 85% 65% at 72% 18%, rgba(255, 211, 193, 0.38) 0%, transparent 58%),
+    radial-gradient(ellipse 65% 55% at 18% 42%, rgba(255, 244, 239, 0.22) 0%, transparent 54%);
+  /* Static — no animation. The visual effect is achieved by the image + grade layers */
 }
 
-.video-backdrop__video {
+.video-backdrop__video,
+.image-backdrop__image {
   position: absolute;
   inset: -5%;
   z-index: 0;
   width: 110%;
   height: 110%;
   object-fit: cover;
-  transform: scale(1.05);
-  filter: saturate(1.05) contrast(1.08) brightness(0.72);
+  /* Static transform — does NOT animate, so no compositor thrashing */
+  transform: scale(1.05) translateZ(0);
+  filter: saturate(1.05) contrast(1.08) brightness(0.68);
+  will-change: auto;
 }
 
 .video-backdrop__video--overlay {
@@ -54,22 +66,26 @@
   filter: saturate(1.05) contrast(1.06) brightness(0.85);
 }
 
+/* Grade: opacity-only animation (compositor-only = 60fps guaranteed).
+   Removed mix-blend-mode: soft-light — it forces a stacking context that
+   breaks compositing batching in Chrome. */
 .video-backdrop__grade {
   position: absolute;
   inset: 0;
   z-index: 2;
   pointer-events: none;
-  mix-blend-mode: soft-light;
-  opacity: 0.82;
+  opacity: 0.78;
   background:
-    linear-gradient(205deg, rgba(255, 170, 145, 0.24) 0%, transparent 45%),
-    linear-gradient(25deg, rgba(255, 232, 221, 0.18) 0%, transparent 40%),
-    radial-gradient(110% 78% at 80% 12%, rgba(255, 209, 195, 0.24) 0%, transparent 60%),
-    linear-gradient(180deg, rgba(24, 8, 12, 0.42) 0%, transparent 55%);
-  background-size: 130% 130%, 120% 120%, 125% 125%, 100% 100%;
-  animation: hero-grade-pulse 11s ease-in-out infinite, hero-grade-shift 18s ease-in-out infinite alternate;
+    linear-gradient(205deg, rgba(255, 170, 145, 0.2) 0%, transparent 42%),
+    linear-gradient(180deg, rgba(24, 8, 12, 0.5) 0%, rgba(24, 8, 12, 0.1) 45%, transparent 70%),
+    radial-gradient(ellipse 100% 72% at 80% 10%, rgba(255, 209, 195, 0.18) 0%, transparent 55%);
+  transform: translateZ(0);
+  will-change: opacity;
+  animation: hero-grade-pulse 11s ease-in-out infinite;
 }
 
+/* Beam: transform+opacity animation — runs on GPU compositor thread.
+   Removed mix-blend-mode: screen. The gradient itself provides the luminosity. */
 .video-backdrop__beam {
   position: absolute;
   z-index: 3;
@@ -78,33 +94,33 @@
   width: 72%;
   height: 170%;
   pointer-events: none;
-  opacity: 0.34;
-  transform: rotate(-15deg);
-  mix-blend-mode: screen;
+  opacity: 0;
+  transform: translate3d(-8%, 0, 0) rotate(-15deg);
   background: linear-gradient(
     90deg,
     transparent 0%,
-    rgba(255, 255, 255, 0.14) 34%,
-    rgba(255, 255, 255, 0.35) 48%,
-    rgba(255, 255, 255, 0.08) 62%,
+    rgba(255, 255, 255, 0.09) 34%,
+    rgba(255, 255, 255, 0.22) 48%,
+    rgba(255, 255, 255, 0.06) 62%,
     transparent 100%
   );
-  filter: blur(3px);
-  animation: hero-beam-sweep 12s cubic-bezier(0.2, 0.8, 0.2, 1) infinite;
+  /* No filter:blur here — blur forces a separate raster layer.
+     The gradient soft-edge already looks blurred. */
+  will-change: transform, opacity;
+  animation: hero-beam-sweep 14s cubic-bezier(0.2, 0.8, 0.2, 1) infinite;
 }
 
+/* Wash: opacity-only, no blend mode, no mix-blend-mode */
 .video-backdrop__wash {
   position: absolute;
   inset: 0;
   z-index: 4;
   pointer-events: none;
   background:
-    linear-gradient(195deg, rgba(36, 8, 16, 0.36) 0%, transparent 42%),
-    linear-gradient(0deg, rgba(21, 4, 8, 0.86) 0%, rgba(21, 4, 8, 0.26) 38%, transparent 62%),
-    radial-gradient(ellipse 90% 70% at 70% 35%, rgba(255, 186, 164, 0.16) 0%, transparent 55%),
-    radial-gradient(ellipse 65% 48% at 22% 26%, rgba(255, 242, 237, 0.14) 0%, transparent 60%);
-  background-size: 130% 130%, 120% 120%, 125% 125%, 115% 115%;
-  animation: hero-wash-breathe 9s ease-in-out infinite, hero-wash-shift 16s ease-in-out infinite alternate;
+    linear-gradient(0deg, rgba(18, 3, 7, 0.9) 0%, rgba(18, 3, 7, 0.2) 36%, transparent 58%),
+    linear-gradient(195deg, rgba(32, 6, 14, 0.3) 0%, transparent 40%);
+  transform: translateZ(0);
+  /* Static — no animation needed, the gradient provides depth */
 }
 
 .video-backdrop__vignette {
@@ -112,85 +128,46 @@
   inset: 0;
   z-index: 5;
   pointer-events: none;
-  background: radial-gradient(ellipse at 50% 40%, transparent 22%, rgba(4, 5, 10, 0.75) 100%);
-  opacity: 0.95;
-  background: radial-gradient(ellipse at 50% 40%, transparent 22%, rgba(10, 2, 4, 0.76) 100%);
+  background: radial-gradient(ellipse at 50% 40%, transparent 20%, rgba(8, 2, 4, 0.82) 100%);
 }
 
+/* Grain: replaced SVG feTurbulence (creates a new paint layer + blend mode)
+   with a lightweight CSS pseudo-noise that Chrome handles as a static layer. */
 .video-backdrop__grain {
   position: absolute;
   inset: 0;
   z-index: 6;
-  opacity: 0.07;
-  mix-blend-mode: overlay;
   pointer-events: none;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-}
-
-@keyframes hero-ambient-drift {
-  0% {
-    transform: translate3d(-1.6%, -1%, 0) scale(1);
-    opacity: 0.48;
-  }
-  100% {
-    transform: translate3d(1.8%, 1.2%, 0) scale(1.03);
-    opacity: 0.7;
-  }
+  opacity: 0.04;
+  /* Static tiled SVG noise — no blend mode, compositor can ignore it */
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+  background-size: 180px 180px;
 }
 
 @keyframes hero-grade-pulse {
-  0%,
-  100% {
-    opacity: 0.74;
-  }
-  50% {
-    opacity: 0.9;
-  }
+  0%, 100% { opacity: 0.68; }
+  50% { opacity: 0.88; }
 }
 
-@keyframes hero-wash-breathe {
-  0%,
-  100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.88;
-  }
-}
-
-@keyframes hero-grade-shift {
-  0% {
-    background-position: 0% 40%, 100% 0%, 85% 0%, 0% 0%;
-  }
-  100% {
-    background-position: 18% 58%, 82% 16%, 70% 18%, 0% 0%;
-  }
-}
-
-@keyframes hero-wash-shift {
-  0% {
-    background-position: 0% 0%, 50% 100%, 70% 35%, 20% 20%;
-  }
-  100% {
-    background-position: 10% 6%, 55% 88%, 62% 30%, 34% 24%;
-  }
-}
-
+/* Beam sweep: only transform + opacity. Chrome compositor handles both.
+   No scale(), no rotate() change mid-animation — just translate. */
 @keyframes hero-beam-sweep {
   0% {
     transform: translate3d(-8%, 0, 0) rotate(-15deg);
+    opacity: 0;
+  }
+  8% { opacity: 0.32; }
+  55% {
+    transform: translate3d(118%, -2%, 0) rotate(-13deg);
     opacity: 0.14;
   }
-  28% {
-    opacity: 0.42;
-  }
-  60% {
-    transform: translate3d(118%, -2%, 0) rotate(-13deg);
-    opacity: 0.18;
+  70% {
+    transform: translate3d(138%, -2%, 0) rotate(-13deg);
+    opacity: 0;
   }
   100% {
     transform: translate3d(138%, -2%, 0) rotate(-13deg);
-    opacity: 0.06;
+    opacity: 0;
   }
 }
 
@@ -200,6 +177,7 @@
   .video-backdrop__grade,
   .video-backdrop__wash {
     animation: none;
+    will-change: auto;
   }
 }
 
@@ -207,6 +185,7 @@
 .video-backdrop--lite .video-backdrop__grade,
 .video-backdrop--lite .video-backdrop__wash {
   animation: none;
+  will-change: auto;
 }
 
 .video-backdrop--lite .video-backdrop__beam,
@@ -220,6 +199,104 @@
 
 .video-backdrop--lite .video-backdrop__wash {
   opacity: 0.82;
+}
+
+.video-backdrop--still .video-backdrop__video--overlay {
+  display: none;
+}
+
+.video-backdrop--still .video-backdrop__video {
+  filter: saturate(1.02) contrast(1.04) brightness(0.72);
+}
+
+.video-backdrop--still .video-backdrop__grade,
+.video-backdrop--still .video-backdrop__wash {
+  opacity: 0.62;
+}
+
+/* ── Chrome performance override ── */
+/* Chrome has known issues compositing backdrop-filter + animations together.
+   We strip backdrop-filter from ALL elements globally under chrome-lite,
+   and stop the remaining infinite animation (grade pulse). */
+
+body.chrome-lite * {
+  /* Disable backdrop-filter site-wide */
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+/* Stop the grade opacity pulse and remaining cartografia animations */
+body.chrome-lite .video-backdrop__grade,
+body.chrome-lite .cartografia__orb,
+body.chrome-lite .cartografia-card__button::before,
+body.chrome-lite .cartografia-card__sheet,
+body.chrome-lite .cartografia-card__pin,
+body.chrome-lite .cartografia__portfolio-head::after {
+  animation: none !important;
+  will-change: auto !important;
+}
+
+/* Slow beam down \u2014 it's transform-only so Chrome handles it at 60fps even slow */
+body.chrome-lite .video-backdrop__beam {
+  animation-duration: 22s !important;
+}
+
+/* Hide decorative complexity that causes raster cache pressure */
+body.chrome-lite .video-backdrop__grain,
+body.chrome-lite .cartografia__grid {
+  display: none;
+}
+
+body.chrome-lite .image-backdrop__image,
+body.chrome-lite .cartografia__hero-backdrop img,
+body.chrome-lite .cartografia-card__sheet img,
+body.chrome-lite .cartografia__hero-preview img {
+  filter: none;
+}
+
+/* Replace frosted-glass looks with solid semi-transparent backgrounds */
+body.chrome-lite .topbar--dark {
+  background: rgba(18, 22, 32, 0.92) !important;
+}
+
+body.chrome-lite .cartografia__topbar {
+  background: rgba(248, 243, 237, 0.96) !important;
+}
+
+body.chrome-lite .glass-panel {
+  background: color-mix(in srgb, var(--bg) 72%, transparent) !important;
+}
+
+body.chrome-lite .glass-pill {
+  background: rgba(255, 247, 244, 0.6) !important;
+}
+
+body.chrome-lite .cartografia__index a {
+  background: rgba(255, 255, 255, 0.86) !important;
+}
+
+body.chrome-lite .cartografia-card__button {
+  box-shadow: 0 14px 40px rgba(76, 45, 40, 0.14) !important;
+}
+
+body.chrome-lite .cartografia__archive {
+  box-shadow: 0 14px 40px rgba(76, 45, 40, 0.14) !important;
+}
+
+body.chrome-lite .cartografia-modal__backdrop {
+  background: rgba(7, 2, 5, 0.86) !important;
+}
+
+body.chrome-lite .cartografia-modal__panel {
+  background: rgba(255, 250, 246, 0.99) !important;
+}
+
+/* content-visibility skips rendering of off-screen sections entirely */
+body.chrome-lite .cartografia-card,
+body.chrome-lite .capabilities,
+body.chrome-lite .credits {
+  content-visibility: auto;
+  contain-intrinsic-size: 0 780px;
 }
 
 .glass-panel {
@@ -460,6 +537,42 @@
   color: rgba(255, 255, 255, 0.96);
   text-wrap: balance;
 }
+
+/* ── Hero CSS entry animations ──────────────────────────────────────────────
+   These run on the CSS compositor thread \u2014 zero JS cost after first render.
+   Elements start invisible (opacity:0, translateY:28px) and animate in.
+   The [data-ready="true"] attribute is set by Hero.tsx after first paint. */
+
+.hero__anim {
+  opacity: 0;
+  transform: translateY(28px);
+}
+
+.section.hero--cinematic[data-ready="true"] .hero__anim {
+  animation: hero-rise 0.9s var(--ease-out) forwards;
+}
+
+.hero__anim--0 { animation-delay: 0.08s; }
+.hero__anim--1 { animation-delay: 0.15s; }
+.hero__anim--2 { animation-delay: 0.22s; }
+.hero__anim--3 { animation-delay: 0.29s; }
+
+@keyframes hero-rise {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Respect reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  .hero__anim {
+    opacity: 1;
+    transform: none;
+    animation: none !important;
+  }
+}
+
 
 .hero__headline-serif {
   display: block;
@@ -909,7 +1022,9 @@
   border-radius: 999px;
   filter: blur(1px);
   opacity: 0.74;
+  /* translate3d creates a compositing layer — animation stays on GPU */
   transform: translate3d(0, 0, 0);
+  will-change: transform;
   animation: cartografia-float 6s ease-in-out infinite;
 }
 
@@ -1148,7 +1263,9 @@
     0 0 70px rgba(255, 170, 145, 0.12);
   backdrop-filter: blur(26px) saturate(170%);
   -webkit-backdrop-filter: blur(26px) saturate(170%);
-  transform-style: preserve-3d;
+  /* preserve-3d + backdrop-filter = Chrome rendering bug (compositor cannot
+     merge these two effects). Remove preserve-3d here, use translateZ on children instead. */
+  will-change: transform;
 }
 
 .cartografia__glass-shard--large {
@@ -1211,8 +1328,10 @@
     0 34px 90px rgba(0, 0, 0, 0.26);
   backdrop-filter: blur(30px) saturate(170%);
   -webkit-backdrop-filter: blur(30px) saturate(170%);
-  transform: rotateX(0deg) rotateY(0deg) translate3d(0, 0, 0);
-  transform-style: preserve-3d;
+  transform: translate3d(0, 0, 0);
+  /* Do NOT use preserve-3d here: it creates a separate stacking context that
+     prevents backdrop-filter from compositing correctly in Chrome/Webkit */
+  will-change: transform;
   transition:
     transform 0.45s var(--ease-out),
     border-color 0.45s var(--ease-out),
@@ -2294,7 +2413,9 @@
   padding-left: 0;
   margin-bottom: 52vh;
   transform-origin: center top;
-  will-change: transform;
+  /* will-change on sticky cards is fine — but only while the card is near
+     the viewport. Browsers handle this automatically for sticky elements. */
+  contain: layout style;
 }
 
 .cartografia-card:nth-child(1) {
@@ -2674,18 +2795,6 @@
   color: var(--purple-soft);
 }
 
-.cartografia-card__button {
-  animation: cartografia-card-breathe 7s ease-in-out infinite;
-}
-
-.cartografia-card:nth-child(2n) .cartografia-card__button {
-  animation-delay: -1.2s;
-}
-
-.cartografia-card:nth-child(3n) .cartografia-card__button {
-  animation-delay: -2.4s;
-}
-
 .cartografia-card__button::before {
   height: 100%;
   inset: 0;
@@ -2751,16 +2860,6 @@
   background: linear-gradient(90deg, var(--cartografia-red), rgba(139, 41, 66, 0.12), transparent);
   transform-origin: left center;
   animation: cartografia-rule-scan 4.8s ease-in-out infinite;
-}
-
-@keyframes cartografia-card-breathe {
-  0%,
-  100% {
-    filter: saturate(1);
-  }
-  50% {
-    filter: saturate(1.03);
-  }
 }
 
 @keyframes cartografia-card-glint {
@@ -3356,6 +3455,28 @@
   transform: scale(1.015);
 }
 
+.cartografia-card__button {
+  isolation: isolate;
+  background-color: hsl(34 21% 98%);
+  background-image: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+.cartografia-card__content {
+  position: relative;
+  z-index: 2;
+  isolation: isolate;
+  background-color: hsl(34 21% 98%);
+  border-radius: 0.35rem;
+}
+
+.cartografia-card__media {
+  position: relative;
+  z-index: 1;
+  background-color: hsl(34 21% 98%);
+}
+
 @media (max-width: 900px) {
   .cartografia-card__media {
     min-height: clamp(17rem, 56vw, 25rem);
@@ -3384,10 +3505,9 @@
   padding-bottom: clamp(3rem, 6.5vw, 4.25rem);
   padding-inline: clamp(0.7rem, 1.8vw, 1.4rem);
   background: linear-gradient(180deg, hsl(34 21% 94%) 0%, hsl(34 21% 92%) 18%, hsl(34 18% 89%) 100%);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  /* No backdrop-filter: capabilities has a solid opaque background, no blur needed */
   content-visibility: auto;
-  contain-intrinsic-size: 980px;
+  contain-intrinsic-size: 0 980px;
 }
 
 .capabilities__header {
@@ -3484,12 +3604,12 @@
   position: absolute;
   inset: 0;
   pointer-events: none;
-  opacity: 0.24;
+  opacity: 0.18;
   background-image:
     linear-gradient(rgba(255, 255, 255, 0.16) 1px, transparent 1px),
     linear-gradient(90deg, rgba(255, 255, 255, 0.16) 1px, transparent 1px);
   background-size: 36px 36px;
-  mix-blend-mode: soft-light;
+  /* Removed mix-blend-mode: soft-light — creates extra stacking context */
 }
 
 .capabilities__left-title {
@@ -3622,10 +3742,9 @@
     rgba(24, 8, 12, 0.78) 0%,
     rgba(18, 5, 9, 0.9) 100%
   );
-  backdrop-filter: blur(12px) saturate(135%);
-  -webkit-backdrop-filter: blur(12px) saturate(135%);
+  /* Removed backdrop-filter: credits sits on a dark solid gradient, no blur effect visible */
   content-visibility: auto;
-  contain-intrinsic-size: 860px;
+  contain-intrinsic-size: 0 860px;
 }
 
 .credits__row {
@@ -3782,4 +3901,103 @@
 
 .service-page__back:hover {
   opacity: 0.84;
+}
+
+/* ── IntersectionObserver Reveal Animations ────────────────────────────────
+   Used by Capabilities.tsx and Credits.tsx instead of Framer Motion whileInView.
+   IntersectionObserver runs off the main thread, zero JS cost during animation.
+   The CSS animation (opacity + translateY) runs on the GPU compositor. */
+
+/* Capabilities header items */
+.cap-reveal {
+  opacity: 0;
+  transform: translateY(22px);
+  transition:
+    opacity 0.7s var(--ease-out),
+    transform 0.7s var(--ease-out);
+}
+
+.section.capabilities[data-visible="true"] .cap-reveal {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.cap-reveal--0 { transition-delay: 0s; }
+.cap-reveal--1 { transition-delay: 0.06s; }
+.cap-reveal--2 { transition-delay: 0.12s; }
+
+/* Board (image + rail container) */
+.cap-board {
+  opacity: 0;
+  transform: translateY(24px) scale(0.985);
+  transition:
+    opacity 0.8s var(--ease-out),
+    transform 0.8s var(--ease-out);
+}
+
+.cap-board[data-visible="true"] {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+/* Individual rail items with CSS stagger */
+.cap-rail-item {
+  opacity: 0;
+  transform: translateX(26px);
+  transition:
+    opacity 0.7s var(--ease-out),
+    transform 0.7s var(--ease-out);
+}
+
+.cap-board[data-visible="true"] .cap-rail-item {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* Stagger via --rail-i CSS custom property set inline */
+.cap-board[data-visible="true"] .cap-rail-item:nth-child(1) { transition-delay: 0.12s; }
+.cap-board[data-visible="true"] .cap-rail-item:nth-child(2) { transition-delay: 0.22s; }
+.cap-board[data-visible="true"] .cap-rail-item:nth-child(3) { transition-delay: 0.32s; }
+.cap-board[data-visible="true"] .cap-rail-item:nth-child(4) { transition-delay: 0.42s; }
+
+/* Figure reveal */
+.cap-reveal-item {
+  opacity: 0;
+  transform: translateY(24px);
+  transition:
+    opacity 0.75s var(--ease-out),
+    transform 0.75s var(--ease-out);
+  transition-delay: 0.08s;
+}
+
+.cap-board[data-visible="true"] .cap-reveal-item {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Credits row reveal */
+.credits-reveal {
+  opacity: 0;
+  transform: translateY(20px);
+  transition:
+    opacity 0.7s var(--ease-out),
+    transform 0.7s var(--ease-out);
+}
+
+.credits-reveal[data-visible="true"] {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Disable all reveal animations for reduced-motion users */
+@media (prefers-reduced-motion: reduce) {
+  .cap-reveal,
+  .cap-board,
+  .cap-rail-item,
+  .cap-reveal-item,
+  .credits-reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
 }
